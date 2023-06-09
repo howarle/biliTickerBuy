@@ -1,6 +1,6 @@
 import datetime
 import time
-import pyttsx3
+import os
 import json
 import random
 from selenium import webdriver
@@ -8,10 +8,11 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
-engine = pyttsx3.init()
+# engine = pyttsx3.init()
 day = "2023-05-02 周二"
-buy_url = "https://show.bilibili.com/platform/detail.html?id=72320&from=pc_ticketlist"
-tick_xpath = f"//*[@id='app']/div[2]/div[2]/div[2]/div[4]/ul[1]/li[2]/div[normalize-space()='{day}']"
+# buy_url = "https://show.bilibili.com/platform/detail.html?id=71576"
+buy_url = "https://show.bilibili.com/platform/detail.html?id=68575"
+tick_xpath = f"//*[@id=\"app\"]/div[2]/div[2]/div[2]/div[2]/div[4]/ul[1]/li[2]/div[1]"
 # 测试
 # day = "4月30日"
 # buy_url = "https://show.bilibili.com/platform/detail.html?id=58757&from=pc_ticketlist"
@@ -22,19 +23,20 @@ with open('./config.json', 'r') as f:
 
 
 def voice(message):
-    engine.setProperty('volume', 1.0)
-    engine.say(message)
-    engine.runAndWait()
-    engine.stop()
-    voice(message)
+    while (1):
+        os.system(f"say \"{message}\"")
+    # engine.setProperty('volume', 1.0)
+    # engine.say(message)
+    # engine.runAndWait()
+    # engine.stop()
+    # voice(message)
 
 
-TargetTime = "2023-04-16 16:39:00.00000000"  # 设置抢购时间
+TargetTime = "2023-06-10 00:46:00.00000000"  # 设置抢购时间
 WebDriver = webdriver.Chrome()
 wait = WebDriverWait(WebDriver, 0.5)
-if len(config["bilibili_cookies"]) == 0:
-    WebDriver.get(
-        buy_url)  # 输入目标购买页面
+WebDriver.get(buy_url)  # 输入目标购买页面
+if 1 or len(config["bilibili_cookies"]) == 0:
     WebDriver.maximize_window()
     time.sleep(1)
     WebDriver.find_element(By.CLASS_NAME, "nav-header-register").click()
@@ -43,14 +45,17 @@ if len(config["bilibili_cookies"]) == 0:
         try:
             WebDriver.find_element(By.CLASS_NAME, "nav-header-register")
         except:
-            break
+            try:
+                WebDriver.find_element(By.CLASS_NAME, "risk-input-before")
+            except:
+                break
     time.sleep(5)
+    WebDriver.get(buy_url)
     config["bilibili_cookies"] = WebDriver.get_cookies()
     with open('./config.json', 'w') as f:
         json.dump(config, f, indent=4)
 else:
-    WebDriver.get(
-        buy_url)  # 输入目标购买页面
+
     for cookie in config["bilibili_cookies"]:  # 利用cookies登录账号
         my_cookie = {
             'domain': cookie['domain'],
@@ -94,13 +99,15 @@ while True:
         print("进入购买页面成功")
         break
     except:
+        time.sleep(2)
         WebDriver.refresh()
         continue
 
 element = None
 while element is None:
     try:
-        element=WebDriver.find_element(By.CLASS_NAME, "confirm-paybtn.active")
+        element = WebDriver.find_element(
+            By.CLASS_NAME, "confirm-paybtn.active")
     except:
         continue
 element.click()
