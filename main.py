@@ -12,12 +12,11 @@ from selenium.webdriver.support import expected_conditions as EC
 engine = pyttsx3.init()
 
 day = "2023-05-02 周二"
-# buy_url = "https://show.bilibili.com/platform/detail.html?id=71576"
 buy_url = "https://show.bilibili.com/platform/detail.html?id=68575"
 tick_xpath = f"//*[@id=\"app\"]/div[2]/div[2]/div[2]/div[2]/div[4]/ul[1]/li[2]/div[1]"
 # 测试
-# tick_xpath = f"//*[@id=\"app\"]/div[2]/div[2]/div[2]/div[2]/div[4]/ul[1]/li[2]/div[1]"
 # buy_url = "https://show.bilibili.com/platform/detail.html?id=71576"
+# tick_xpath = f"//*[@id=\"app\"]/div[2]/div[2]/div[2]/div[2]/div[4]/ul[1]/li[2]/div[1]"
 
 TargetTime = "2023-06-10 00:46:00.00000000"  # 设置抢购时间
 WebDriver = webdriver.Edge() # 选择你要使用的梁浏览器
@@ -30,13 +29,13 @@ with open('./config.json', 'r') as f:
 def voice(message, repeat=False):
     while (1):
         # os.system(f"say \"{message}\"")
-        engine.setProperty('volume', 1.0)
+        engine.setProperty('volume', 10.0)
         engine.say(message)
         engine.runAndWait()
         engine.stop()
         if(not repeat):
             break
-        time.sleep(3)
+        time.sleep(1)
 
 voice("开始抢票，声音测试")
 
@@ -83,6 +82,7 @@ else:
         )
         WebDriver.maximize_window()
 
+voice("登录成功")
 while True:
     now = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S.%f')
     print(now + "     " + TargetTime)
