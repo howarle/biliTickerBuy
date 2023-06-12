@@ -1,6 +1,7 @@
 import datetime
 import time
 import os
+import pyttsx3
 import json
 import random
 from selenium import webdriver
@@ -8,32 +9,37 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
-# engine = pyttsx3.init()
+engine = pyttsx3.init()
+
 day = "2023-05-02 周二"
 # buy_url = "https://show.bilibili.com/platform/detail.html?id=71576"
 buy_url = "https://show.bilibili.com/platform/detail.html?id=68575"
 tick_xpath = f"//*[@id=\"app\"]/div[2]/div[2]/div[2]/div[2]/div[4]/ul[1]/li[2]/div[1]"
 # 测试
-# day = "4月30日"
-# buy_url = "https://show.bilibili.com/platform/detail.html?id=58757&from=pc_ticketlist"
-# tick_xpath = f"//*[@id='app']/div[2]/div[2]/div[2]/div[4]/ul[1]/li[2]/div[normalize-space()='{day}']"
+# tick_xpath = f"//*[@id=\"app\"]/div[2]/div[2]/div[2]/div[2]/div[4]/ul[1]/li[2]/div[1]"
+# buy_url = "https://show.bilibili.com/platform/detail.html?id=71576"
+
+TargetTime = "2023-06-10 00:46:00.00000000"  # 设置抢购时间
+WebDriver = webdriver.Edge() # 选择你要使用的梁浏览器
+# WebDriver = webdriver.Chrome()
+
 # 加载配置文件
 with open('./config.json', 'r') as f:
     config = json.load(f)
 
-
-def voice(message):
+def voice(message, repeat=False):
     while (1):
-        os.system(f"say \"{message}\"")
-    # engine.setProperty('volume', 1.0)
-    # engine.say(message)
-    # engine.runAndWait()
-    # engine.stop()
-    # voice(message)
+        # os.system(f"say \"{message}\"")
+        engine.setProperty('volume', 1.0)
+        engine.say(message)
+        engine.runAndWait()
+        engine.stop()
+        if(not repeat):
+            break
+        time.sleep(3)
 
+voice("开始抢票，声音测试")
 
-TargetTime = "2023-06-10 00:46:00.00000000"  # 设置抢购时间
-WebDriver = webdriver.Chrome()
 wait = WebDriverWait(WebDriver, 0.5)
 WebDriver.get(buy_url)  # 输入目标购买页面
 if 1 or len(config["bilibili_cookies"]) == 0:
@@ -112,5 +118,5 @@ while element is None:
         continue
 element.click()
 print("订单创建完成，请在一分钟内付款")
-voice('抢到票了，速归！')
+voice('抢到票了，速归！', True)
 time.sleep(60)
