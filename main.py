@@ -3,7 +3,7 @@ import time
 import os
 import pyttsx3
 import json
-import random
+import threading
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
@@ -15,7 +15,7 @@ day = "2023-05-02 周二"
 buy_url = "https://show.bilibili.com/platform/detail.html?id=68575"
 tick_xpath = f"//*[@id=\"app\"]/div[2]/div[2]/div[2]/div[2]/div[4]/ul[1]/li[2]/div[1]"
 # 测试
-# buy_url = "https://show.bilibili.com/platform/detail.html?id=71576"
+# buy_url = "https://show.bilibili.com/platform/detail.html?id=73060"
 # tick_xpath = f"//*[@id=\"app\"]/div[2]/div[2]/div[2]/div[2]/div[4]/ul[1]/li[2]/div[1]"
 
 TargetTime = "2023-06-10 00:46:00.00000000"  # 设置抢购时间
@@ -103,9 +103,10 @@ while True:
         element.click()
         # time.sleep(5)
         print("进入购买页面成功")
+        # thread1= threading.Thread(target=voice,args=("有啦，有啦，有啦，有啦，有啦，有啦，有啦，有啦",)).start()
         break
     except:
-        time.sleep(2)
+        time.sleep(1)
         WebDriver.refresh()
         continue
 
